@@ -97,3 +97,34 @@ run_command(["inspect", "--name", "Halley"])
 run_command(["inspect", "--pdes", "433"])
 run_command(["inspect", "--verbose", "--name", "Ganymed"])
 run_command(["inspect", "--name", "DoesNotExist"])
+
+
+# TASK 3
+print("\nTask 3: Check filters.py\n")
+def run_query(*args):
+    print(f"\n$ python3 main.py query {' '.join(args)}")
+    result = subprocess.run(
+        ["python3", "main.py", "query", *args],
+        capture_output=True,
+        text=True
+    )
+    print(result.stdout)
+    if result.stderr:
+        print("stderr:", result.stderr)
+
+# 1. Query for close approaches on 2020-01-01
+run_query("--date", "2020-01-01")
+# 2. Query for close approaches in 2020
+run_query("--start-date", "2020-01-01", "--end-date", "2020-12-31")
+# 3. In 2020 with a distance of <=0.1 au
+run_query("--start-date", "2020-01-01", "--end-date", "2020-12-31", "--max-distance", "0.1")
+# 4. In 2020 with a distance of >=0.3 au
+run_query("--start-date", "2020-01-01", "--end-date", "2020-12-31", "--min-distance", "0.3")
+# 5. In 2020 with a velocity of <=50 km/s
+run_query("--start-date", "2020-01-01", "--end-date", "2020-12-31", "--max-velocity", "50")
+# 6. In 2020 with a velocity of >=25 km/s
+run_query("--start-date", "2020-01-01", "--end-date", "2020-12-31", "--min-velocity", "25")
+# 7. Not hazardous NEOs between 0.5km and 0.6km in diameter
+run_query("--min-diameter", "0.5", "--max-diameter", "0.6", "--not-hazardous")
+# 8. Rare: hazardous, large, fast, and close
+run_query("--max-distance", "0.1", "--min-velocity", "35", "--min-diameter", "2.5", "--hazardous")
