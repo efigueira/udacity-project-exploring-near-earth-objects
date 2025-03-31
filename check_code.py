@@ -1,16 +1,18 @@
-# TASK 1
-
 from models import NearEarthObject, CloseApproach
 from datetime import datetime
 from helpers import cd_to_datetime
+import subprocess
 
 
+# TASK 1
+print("Task 1: Check attributes of NearEarthObject and CloseApproach instance\n")
 neo = NearEarthObject(
     designation='2020 FK',
     name='One REALLY BIG fake asteroid',
     diameter=12.345,
     hazardous=True
 )
+
 
 if neo.designation == '2020 FK':
     print("✅ designation is correct")
@@ -76,3 +78,22 @@ if ca.time_str == '2020-01-01 12:30':
     print("✅ time_str is correct")
 else:
     print(f"❌ time_str is incorrect: {ca.time_str}")
+
+# TASK 2
+print("\nTask 2: Check command line arguments\n")
+def run_command(args):
+    print(f"\n$ python main.py {' '.join(args)}")
+    result = subprocess.run(
+        ["python", "main.py"] + args,
+        capture_output=True,
+        text=True
+    )
+    print(result.stdout)
+    if result.stderr:
+        print("stderr:", result.stderr)
+
+# Test cases
+run_command(["inspect", "--name", "Halley"])
+run_command(["inspect", "--pdes", "433"])
+run_command(["inspect", "--verbose", "--name", "Ganymed"])
+run_command(["inspect", "--name", "DoesNotExist"])
