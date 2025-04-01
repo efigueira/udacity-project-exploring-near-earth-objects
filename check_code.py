@@ -1,3 +1,9 @@
+"""Check and validate the functionality of the Near-Earth Object project.
+
+This script runs tasks 1–4, including object checks, CLI command tests,
+file output verification, and unit tests.
+"""
+
 from models import NearEarthObject, CloseApproach
 from datetime import datetime
 from helpers import cd_to_datetime
@@ -85,6 +91,7 @@ else:
 # TASK 2
 print("\nTask 2: Check command line arguments\n")
 def run_command(args):
+    """Run a command line command and print the output."""
     print(f"\n$ python main.py {' '.join(args)}")
     result = subprocess.run(
         ["python", "main.py"] + args,
@@ -105,6 +112,7 @@ run_command(["inspect", "--name", "DoesNotExist"])
 # TASK 3
 print("\nTask 3: Check filters.py\n")
 def run_query(*args):
+    """Run a query command and print the output."""
     print(f"\n$ python main.py query {' '.join(args)}")
     result = subprocess.run(
         ["python", "main.py", "query", *args],
@@ -135,6 +143,7 @@ run_query("--max-distance", "0.1", "--min-velocity", "35", "--min-diameter", "2.
 # TASK 4
 print("\nTask 4: Check output files\n")
 def run_unittests():
+    """Run unit tests and print the output."""
     print("\n🔎 Running unit tests...\n")
     result = subprocess.run(
         ["python", "-m", "unittest", "--verbose"],
@@ -147,6 +156,7 @@ def run_unittests():
 
 
 def run_query_and_check_output(args, outfile):
+    """Run a query command and check the output file."""
     print(f"\n$ python main.py {' '.join(args)}")
     result = subprocess.run(["python", "main.py"] + args, capture_output=True, text=True)
 
