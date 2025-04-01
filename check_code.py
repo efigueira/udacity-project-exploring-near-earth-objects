@@ -2,10 +2,13 @@ from models import NearEarthObject, CloseApproach
 from datetime import datetime
 from helpers import cd_to_datetime
 import subprocess
+import os
+import json
+import csv
 
 
 # TASK 1
-print("Task 1: Check attributes of NearEarthObject and CloseApproach instance\n")
+print("\nTask 1: Check attributes of NearEarthObject and CloseApproach instance\n")
 neo = NearEarthObject(
     designation='2020 FK',
     name='One REALLY BIG fake asteroid',
@@ -102,9 +105,9 @@ run_command(["inspect", "--name", "DoesNotExist"])
 # TASK 3
 print("\nTask 3: Check filters.py\n")
 def run_query(*args):
-    print(f"\n$ python3 main.py query {' '.join(args)}")
+    print(f"\n$ python main.py query {' '.join(args)}")
     result = subprocess.run(
-        ["python3", "main.py", "query", *args],
+        ["python", "main.py", "query", *args],
         capture_output=True,
         text=True
     )
@@ -128,3 +131,70 @@ run_query("--start-date", "2020-01-01", "--end-date", "2020-12-31", "--min-veloc
 run_query("--min-diameter", "0.5", "--max-diameter", "0.6", "--not-hazardous")
 # 8. Rare: hazardous, large, fast, and close
 run_query("--max-distance", "0.1", "--min-velocity", "35", "--min-diameter", "2.5", "--hazardous")
+
+# TASK 4
+print("\nTask 4: Check output files\n")
+def run_unittests():
+    print("\n🔎 Running unit tests...\n")
+    result = subprocess.run(
+        ["python", "-m", "unittest", "--verbose"],
+        capture_output=True,
+        text=True
+    )
+    print(result.stdout)
+    if result.stderr:
+        print("stderr:\n", result.stderr)
+
+
+def run_query_and_check_output(args, outfile):
+    print(f"\n$ python main.py {' '.join(args)}")
+    result = subprocess.run(["python", "main.py"] + args, capture_output=True, text=True)
+
+    # Print output
+    print("stdout:")
+    print(result.stdout)
+    if result.stderr:
+        print("stderr:")
+        print(result.stderr)
+
+    # Check file exists
+    if os.path.exists(outfile):
+        print(f"\n✅ Output file '{outfile}' created.")
+
+        if outfile.endswith(".json"):
+            with open(outfile) as f:
+                data = json.load(f)
+                print(f"✅ JSON contains {len(data)} records.")
+        elif outfile.endswith(".csv"):
+            with open(outfile) as f:
+                reader = csv.reader(f)
+                rows = list(reader)
+                print(f"✅ CSV contains {len(rows) - 1} data rows (plus header).")
+    else:
+        print(f"❌ Output file '{outfile}' was not created.")
+
+
+# 0. Run unit tests
+run_unittests()
+
+# 1. CSV test
+run_query_and_check_output([
+    "query", "--date", "2020-01-01", "--limit", "5", "--outfile", "res/results.csv"
+], "res/results.csv")
+
+# 2. JSON test
+run_query_and_check_output([
+    "query", "--date", "2020-01-01", "--limit", "5", "--outfile", "res/results.json"
+], "res/results.json")
+
+# 3. Full complex query test
+run_query_and_check_output([
+    "query",
+    "--start-date", "2020-01-01",
+    "--end-date", "2020-12-31",
+    "--hazardous",
+    "--min-diameter", "0.25",
+    "--max-distance", "0.1",
+    "--limit", "10",
+    "--outfile", "res/complex_results.json"
+], "res/complex_results.json")

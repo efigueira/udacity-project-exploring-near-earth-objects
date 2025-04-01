@@ -2,7 +2,7 @@
 
 The `create_filters` function produces a collection of objects that is used by
 the `query` method to generate a stream of `CloseApproach` objects that match
-all of the desired criteria. The arguments to `create_filters` are provided by
+all the desired criteria. The arguments to `create_filters` are provided by
 the main module and originate from the user's command-line options.
 
 This function can be thought to return a collection of instances of subclasses
@@ -125,7 +125,7 @@ def create_filters(date=None, start_date=None, end_date=None,
     Each of these arguments is provided by the main module with a value from the
     user's options at the command line. Each one corresponds to a different type
     of filter. For example, the `--date` option corresponds to the `date`
-    argument, and represents a filter that selects close approaches that occured
+    argument, and represents a filter that selects close approaches that occurred
     on exactly that given date. Similarly, the `--min-distance` option
     corresponds to the `distance_min` argument, and represents a filter that
     selects close approaches whose nominal approach distance is at least that
@@ -134,7 +134,7 @@ def create_filters(date=None, start_date=None, end_date=None,
     `hazardous=False`, not to be confused with `hazardous=None`).
 
     The return value must be compatible with the `query` method of `NEODatabase`
-    because the main module directly passes  this result to that method. For now,
+    because the main module directly passes this result to that method. For now,
     this can be thought of as a collection of `AttributeFilter`s.
 
     :param date: A `date` on which a matching `CloseApproach` occurs.
